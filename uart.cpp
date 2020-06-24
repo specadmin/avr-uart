@@ -84,7 +84,7 @@ namespace UART
 //-----------------------------------------------------------------------------
 using namespace UART;
 //-----------------------------------------------------------------------------
-void UART_SECTION uart_init(const BYTE baud)
+void UART_SECTION uart_init(const BYTE baud, enum UART_mode mode)
 {
     WORD ubrr=0;
     _UCSRA=0;  // "одинарная" скорость менее требовательна к делителю частоты и точности
@@ -118,9 +118,17 @@ void UART_SECTION uart_init(const BYTE baud)
     _UBRRL=(BYTE)ubrr;
     uart_flush_rx();
     uart_flush_tx();
-    _UCSRB=_bit(_TXEN)   // enable transmission
-        | _bit(_RXEN)    // enable receiption
-        | _bit(_RXCIE);  // receive completed interrupt enable
+    _UCSRB = 0;
+    if(mode & 0x01)
+    {
+        // enable receiption
+        _UCSRB = _UCSRB | _bit(_RXEN) | _bit(_RXCIE);
+    }
+    if(mode & 0x02)
+    {
+        // enable transmission
+        _UCSRB = _UCSRB | _bit(_TXEN);
+    }
     _UCSRC=_bit(_UCSZ1) | _bit(_UCSZ0);  // 8 bit data
 }
 //-----------------------------------------------------------------------------

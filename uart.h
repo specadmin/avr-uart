@@ -50,7 +50,14 @@ enum baud_rate_id
     BAUD_460800
 };
 //-----------------------------------------------------------------------------
-void uart_init(const BYTE baud);
+enum UART_mode
+{
+    UART_RX     = 0x01,
+    UART_TX     = 0x02,
+    UART_RXTX   = 0x03
+};
+//-----------------------------------------------------------------------------
+void uart_init(const BYTE baud, enum UART_mode mode = UART_RXTX);
 BYTE uart_available();
 BYTE uart_peek();
 BYTE uart_read(BYTE *buf, const BYTE count);
